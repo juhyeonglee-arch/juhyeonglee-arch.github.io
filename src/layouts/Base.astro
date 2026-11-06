@@ -15,6 +15,8 @@ const nav = [
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="only light" />
+  <meta name="theme-color" content="#ffffff" />
   <title>{title ? `${title} · ${SITE.name}` : SITE.name}</title>
   <meta name="description" content={description} />
 </head>
@@ -39,7 +41,6 @@ const nav = [
     --ink: #111111;
     --muted: #5f5f5c;
     --line: #d6d6d2;
-    --placeholder: #ebebe8;
     --font-body: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
     --font-num: var(--font-body);
     --gutter: 48px;
@@ -47,6 +48,7 @@ const nav = [
   }
   @media (max-width: 720px) { :root { --gutter: 20px; } }
   * { box-sizing: border-box; }
+  html { color-scheme: only light; }
   html, body { margin: 0; background: var(--ground); color: var(--ink); }
   body { font-family: var(--font-body); font-size: 14px; line-height: 1.6; }
   a { color: var(--ink); text-decoration: none; }
