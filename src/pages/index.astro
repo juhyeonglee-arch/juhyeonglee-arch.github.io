@@ -2,16 +2,26 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import hero from '../assets/hero.jpg';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.number - a.data.number);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pad = (n: number) => String(n).padStart(2, '0');
+// 첫 화면 영상 4개 (public/hero 폴더). 위 3칸 + 아래 전체 폭 프로세스 그래프
+const heroClips = [
+  { name: 'intro', label: '인트로: SHP 파일 하나로 등고선 모델 자동 생성' },
+  { name: 'map', label: 'SHP 지도 위에 데이터가 쌓이는 장면' },
+  { name: 'model', label: '3D 모델 제작 과정' },
+  { name: 'graph', label: '프로세스 그래프' },
+];
 ---
 <Base overlayHeader>
-  <section class="hero" aria-label="첫 화면">
-    <Image src={hero} alt="" widths={[960, 1600, 2400]} sizes="100vw" loading="eager" />
+  <section class="hero" aria-label="첫 화면: 작업 과정 영상">
+    {heroClips.map((c) => (
+      <div class:list={['clip', c.name]}>
+        <video src={`${base}/hero/${c.name}.mp4`} poster={`${base}/hero/${c.name}.jpg`} autoplay muted loop playsinline preload="auto" aria-label={c.label}></video>
+      </div>
+    ))}
   </section>
   <main class="projects">
     {projects.map((p) => (
@@ -32,8 +42,18 @@ const pad = (n: number) => String(n).padStart(2, '0');
 </Base>
 
 <style>
-  .hero { position: relative; height: 100vh; height: 100svh; background: var(--placeholder); overflow: hidden; }
-  .hero :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .hero {
+    position: relative; height: 100vh; height: 100svh; min-height: 560px;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) 26%;
+    background: var(--ground); overflow: hidden;
+  }
+  .clip { min-width: 0; min-height: 0; overflow: hidden; }
+  .clip.graph { grid-column: 1 / -1; border-top: 1px solid var(--line); }
+  .clip video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (max-width: 720px) {
+    .hero { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-rows: 70svh 18svh; height: auto; }
+    .clip.intro, .clip.map { display: none; }
+  }
   .projects { display: flex; flex-direction: column; gap: 120px; padding: 120px var(--gutter) 0; }
   .project { display: flex; flex-direction: column; gap: 16px; }
   .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: calc(100svh - 140px); min-height: 480px; }

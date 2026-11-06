@@ -17,7 +17,7 @@ GitHub 웹사이트에서 해도 돼요: 저장소에서 `src/content/projects`�
 
 ## 그 밖에 고칠 곳
 
-- 첫 화면 그래픽: `src/assets/hero.jpg` 파일을 같은 이름으로 바꿔 넣어요.
+- 첫 화면 영상: `public/hero/` 안의 `intro`, `map`, `model`, `graph` (.mp4 영상과 같은 이름의 .jpg 정지 화면). 같은 이름으로 바꿔 넣으면 돼요.
 - 사진 페이지: `src/photos/`에 사진을 넣어요. 파일 이름 순서대로 나와요.
 - 이름, 이메일, 링크: `src/site.ts`
 - 소개 페이지: `src/pages/about.astro`
