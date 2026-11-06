@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 
 // src/photos 폴더에 사진을 넣으면 파일 이름 순서대로 표시돼요.
 const files = import.meta.glob<{ default: ImageMetadata }>('../photos/*.{jpg,jpeg,png,webp}', { eager: true });
-const photos = Object.entries(files).sort(([a], [b]) => a.localeCompare(b)).map(([, m]) => m.default);
+const photos: ImageMetadata[] = Object.entries(files).sort(([a], [b]) => a.localeCompare(b)).map(([, m]) => m.default);
 ---
 <Base title="사진" current="photos">
   <main class="photos">

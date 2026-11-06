@@ -7,16 +7,12 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.number - a.data.number);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pad = (n: number) => String(n).padStart(2, '0');
-// 첫 화면 영상 4개 (public/hero 폴더). 위 3칸 + 아래 전체 폭 프로세스 그래프
-const heroClips = [
-  { name: 'intro', label: '인트로: SHP 파일 하나로 등고선 모델 자동 생성' },
-  { name: 'map', label: 'SHP 지도 위에 데이터가 쌓이는 장면' },
-  { name: 'model', label: '3D 모델 제작 과정' },
-  { name: 'graph', label: '프로세스 그래프' },
-];
+// 첫 화면 영상: public/hero 폴더에 영상을 넣고 여기에 추가해요. 비어 있으면 첫 화면이 표시되지 않아요.
+// 예: { name: 'intro', label: '영상 설명' }  →  public/hero/intro.mp4 + intro.jpg
+const heroClips: { name: string; label: string }[] = [];
 ---
 <Base overlayHeader>
-  <section class="hero" aria-label="첫 화면: 작업 과정 영상">
+  {heroClips.length > 0 && <section class="hero" aria-label="첫 화면: 작업 과정 영상">
     {heroClips.map((c) => (
       <div class:list={['clip', c.name, { seq: c.name !== 'graph' }]}>
         {c.name === 'graph'
@@ -24,8 +20,9 @@ const heroClips = [
           : <video src={`${base}/hero/${c.name}.mp4`} poster={`${base}/hero/${c.name}.jpg`} muted playsinline preload="auto" aria-label={c.label}></video>}
       </div>
     ))}
-  </section>
+  </section>}
   <main class="projects">
+    {projects.length === 0 && <p class="muted empty">[프로젝트 준비 중]</p>}
     {projects.map((p) => (
       <a class="project" href={`${base}/projects/${p.id}/`}>
         <div class="pair">
@@ -83,6 +80,7 @@ const heroClips = [
     .hero { grid-template-columns: 1fr; padding-top: 96px; row-gap: 32px; }
     .clip.seq video { max-width: 420px; margin: 0 auto; }
   }
+  .empty { margin: 0; }
   .projects { display: flex; flex-direction: column; gap: 120px; padding: 120px var(--gutter) 0; }
   .project { display: flex; flex-direction: column; gap: 16px; }
   .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: calc(100svh - 140px); min-height: 480px; }
