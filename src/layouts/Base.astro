@@ -29,7 +29,7 @@ const nav = [
   </header>
   <slot />
   <footer class="site-footer">
-    <span>{SITE.email}</span>
+    <a class="mail" href={`mailto:${SITE.email}`}>{SITE.email}</a>
     <span class="links">{SITE.links.map((l) => <a href={l.href}>{l.label}</a>)}</span>
   </footer>
 </body>
@@ -76,5 +76,5 @@ const nav = [
     padding: 64px var(--gutter); color: var(--muted); font-size: 13px;
   }
   .links { display: flex; gap: 16px; }
-  .links a { color: var(--muted); }
+  .links a, .mail { color: var(--muted); }
 </style>
