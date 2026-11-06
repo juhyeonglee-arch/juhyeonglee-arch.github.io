@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import hero from '../assets/hero.jpg';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.number - a.data.number);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<Base overlayHeader>
+  <section class="hero" aria-label="첫 화면">
+    <Image src={hero} alt="" widths={[960, 1600, 2400]} sizes="100vw" loading="eager" />
+  </section>
+  <main class="projects">
+    {projects.map((p) => (
+      <a class="project" href={`${base}/projects/${p.id}/`}>
+        <div class="pair">
+          <div class="cell"><Image src={p.data.cover} alt={`${p.data.title} 사진`} widths={[640, 1000, 1400]} sizes="(max-width: 960px) 100vw, 50vw" /></div>
+          <div class="cell drawing"><Image src={p.data.coverDrawing} alt={`${p.data.title} 도면`} widths={[640, 1000, 1400]} sizes="(max-width: 960px) 100vw, 50vw" /></div>
+        </div>
+        <div class="caption">
+          <span class="num">{pad(p.data.number)}</span>
+          <span class="title">{p.data.title}</span>
+          <span class="muted">{p.data.location}</span>
+          <span class="muted">{p.data.year}</span>
+        </div>
+      </a>
+    ))}
+  </main>
+</Base>
+
+<style>
+  .hero { position: relative; height: 100vh; height: 100svh; background: var(--placeholder); overflow: hidden; }
+  .hero :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .projects { display: flex; flex-direction: column; gap: 120px; padding: 120px var(--gutter) 0; }
+  .project { display: flex; flex-direction: column; gap: 16px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: calc(100svh - 140px); min-height: 480px; }
+  .cell { min-height: 0; background: var(--placeholder); }
+  .cell.drawing { background: var(--ground); border: 1px solid var(--line); }
+  .cell :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .cell.drawing :global(img) { object-fit: contain; padding: 24px; }
+  .caption { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; }
+  .title { font-weight: 500; }
+  @media (max-width: 960px) {
+    .pair { grid-template-columns: 1fr; height: auto; min-height: 0; }
+    .cell { aspect-ratio: 4 / 3; }
+  }
+</style>

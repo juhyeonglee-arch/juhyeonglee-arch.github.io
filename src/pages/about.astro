@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site';
+---
+<Base title="소개" current="about">
+  <main class="about">
+    <div class="body">
+      <p>[자기소개 2~3문장: 하는 일, 관심 있는 주제]</p>
+      <h2 class="muted">경력</h2>
+      <ul>
+        <li><span class="num">[연도]</span> [사무소 / 역할]</li>
+      </ul>
+      <h2 class="muted">학력</h2>
+      <ul>
+        <li><span class="num">[연도]</span> [학교 / 전공]</li>
+      </ul>
+      <h2 class="muted">연락</h2>
+      <p>{SITE.email}</p>
+    </div>
+  </main>
+</Base>
+<style>
+  .about { padding: 64px var(--gutter) 0; }
+  .body { max-width: 640px; }
+  h2 { font-size: 13px; font-weight: 400; margin: 48px 0 12px; }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  li { display: flex; gap: 24px; }
+</style>

@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+
+// src/photos 폴더에 사진을 넣으면 파일 이름 순서대로 표시돼요.
+const files = import.meta.glob<{ default: ImageMetadata }>('../photos/*.{jpg,jpeg,png,webp}', { eager: true });
+const photos = Object.entries(files).sort(([a], [b]) => a.localeCompare(b)).map(([, m]) => m.default);
+---
+<Base title="사진" current="photos">
+  <main class="photos">
+    {photos.map((p, i) => <Image src={p} alt={`사진 ${i + 1}`} widths={[640, 1000, 1600]} sizes="(max-width: 960px) 100vw, 50vw" />)}
+  </main>
+</Base>
+<style>
+  .photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; padding: 64px var(--gutter) 0; align-items: start; }
+  .photos :global(img) { width: 100%; }
+</style>
