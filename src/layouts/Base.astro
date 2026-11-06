@@ -1,4 +1,5 @@
 ---
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import { SITE } from '../site';
 interface Props { title?: string; description?: string; overlayHeader?: boolean; current?: 'projects' | 'photos' | 'about' }
 const { title, description = SITE.description, overlayHeader = false, current = 'projects' } = Astro.props;
@@ -16,9 +17,6 @@ const nav = [
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title ? `${title} · ${SITE.name}` : SITE.name}</title>
   <meta name="description" content={description} />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans+KR:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header class:list={['site-header', { overlay: overlayHeader }]}>
@@ -42,8 +40,8 @@ const nav = [
     --muted: #5f5f5c;
     --line: #d6d6d2;
     --placeholder: #ebebe8;
-    --font-body: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-    --font-num: 'IBM Plex Mono', ui-monospace, monospace;
+    --font-body: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    --font-num: var(--font-body);
     --gutter: 48px;
     /* 레이아웃: 흰 바탕, 작은 글자, 큰 이미지. 한 화면에 한 프로젝트 */
   }
