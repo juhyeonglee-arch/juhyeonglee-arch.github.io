@@ -7,21 +7,16 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.number - a.data.number);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pad = (n: number) => String(n).padStart(2, '0');
-// 첫 화면 영상: public/hero 폴더에 영상을 넣고 여기에 추가해요. 비어 있으면 첫 화면은 화면 높이만큼의 흰 여백으로 남아요.
-// 예: { name: 'intro', label: '영상 설명' }  →  public/hero/intro.mp4 + intro.jpg
+// 첫 화면 영상: public/hero 폴더의 <이름>.mp4 와 정지 화면 <이름>.jpg. 비워 두면('') 화면 높이만큼의 흰 여백으로 남아요.
 // 실제 프로젝트가 하나도 없을 때만 보이는 예시 틀 (번호만 표시)
 const examples = [3, 2, 1];
-const heroClips: { name: string; label: string }[] = [];
+const heroVideo = 'main';
 ---
 <Base overlayHeader>
-  <section class="hero" aria-label="첫 화면">
-    {heroClips.map((c) => (
-      <div class:list={['clip', c.name, { seq: c.name !== 'graph' }]}>
-        {c.name === 'graph'
-          ? <video src={`${base}/hero/${c.name}.mp4`} poster={`${base}/hero/${c.name}.jpg`} autoplay muted loop playsinline preload="auto" aria-label={c.label}></video>
-          : <video src={`${base}/hero/${c.name}.mp4`} poster={`${base}/hero/${c.name}.jpg`} muted playsinline preload="auto" aria-label={c.label}></video>}
-      </div>
-    ))}
+  <section class:list={['hero', { 'has-video': heroVideo }]} aria-label="첫 화면">
+    {heroVideo && (
+      <video class="hero-video" src={`${base}/hero/${heroVideo}.mp4`} poster={`${base}/hero/${heroVideo}.jpg`} autoplay muted loop playsinline preload="auto" aria-label="Contour Model Generator: SHP 지도에서 레이저 시트, 등고선 모형까지 쌓이는 과정"></video>
+    )}
   </section>
   <main class="projects">
     {projects.length === 0 && examples.map((n) => (
@@ -55,45 +50,13 @@ const heroClips: { name: string; label: string }[] = [];
   </main>
 </Base>
 
-<script>
-  // 위 세 칸 영상을 왼쪽부터 차례로 재생하고, 마지막이 끝나면 처음으로 돌아가요.
-  // 화면에 보이지 않는 칸(휴대폰에서 숨긴 칸)은 건너뛰어요.
-  const vids = Array.from(document.querySelectorAll<HTMLVideoElement>('.hero .clip.seq video'));
-  const playable = vids.filter((v) => v.offsetParent !== null);
-  const play = (k: number) => {
-    const v = playable[k];
-    v.currentTime = 0;
-    v.play().catch(() => {});
-  };
-  playable.forEach((v, k) => v.addEventListener('ended', () => play((k + 1) % playable.length)));
-  if (playable.length) play(0);
-</script>
-
 <style>
-  /* 첫 화면: 흰 바탕 위에 영상 4개를 여백을 두고 배치. 위 3칸은 영상 전체가 보이게(contain) */
-  .hero {
-    height: 100vh; height: 100svh; min-height: 620px;
-    box-sizing: border-box;
-    padding: clamp(88px, 11vh, 120px) var(--gutter) clamp(32px, 6vh, 64px);
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: minmax(0, 1fr) auto;
-    column-gap: clamp(16px, 4vw, 72px);
-    row-gap: clamp(24px, 5vh, 56px);
-    background: var(--ground);
-  }
-  .clip { min-width: 0; min-height: 0; display: flex; align-items: center; justify-content: center; }
-  .clip video { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .clip.graph { grid-column: 1 / -1; }
-  .clip.graph video { height: auto; aspect-ratio: 3840 / 800; }
-  @media (max-width: 960px) {
-    .hero { height: auto; min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto; }
-    .clip.seq video { height: auto; aspect-ratio: 1080 / 1320; }
-    .clip.graph video { height: auto; aspect-ratio: 3840 / 800; }
-  }
-  @media (max-width: 600px) {
-    .hero { grid-template-columns: 1fr; padding-top: 96px; row-gap: 32px; }
-    .clip.seq video { max-width: 420px; margin: 0 auto; }
+  /* 첫 화면: 화면 전체 크기. 영상은 잘리지 않게(contain) 흰 바탕 위에 놓여요 */
+  .hero { height: 100vh; height: 100svh; min-height: 560px; background: var(--ground); overflow: hidden; }
+  .hero-video { width: 100%; height: 100%; object-fit: contain; display: block; background: var(--ground); }
+  @media (max-width: 720px) {
+    .hero.has-video { height: auto; min-height: 0; padding-top: 72px; }
+    .hero-video { height: auto; aspect-ratio: 16 / 9; }
   }
   .ph { display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); color: var(--muted); font-size: 12px; }
   .projects { display: flex; flex-direction: column; gap: 120px; padding: 120px var(--gutter) 0; }

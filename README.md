@@ -47,7 +47,7 @@ draft: false
 
 ## 그 밖에 고칠 곳
 
-- 첫 화면: `public/hero/`에 영상(.mp4)과 정지 화면(.jpg)을 넣고 `src/pages/index.astro`의 `heroClips`에 이름을 적어요. 비어 있으면 첫 화면은 화면 높이만큼의 흰 여백으로 남아요.
+- 첫 화면 영상: `public/hero/main.mp4`(16:9, 3840×2160 권장)와 정지 화면 `main.jpg`를 같은 이름으로 바꿔 넣어요. 이름을 바꾸려면 `src/pages/index.astro`의 `heroVideo`를 고쳐요.
 - 사진 페이지: `src/photos/`에 사진을 넣어요. 파일 이름 순서대로 나와요.
 - 이름, 이메일, 링크: `src/site.ts`
 - 소개 페이지: `src/pages/about.astro`
