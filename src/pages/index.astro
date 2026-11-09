@@ -9,6 +9,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pad = (n: number) => String(n).padStart(2, '0');
 // 첫 화면 영상: public/hero 폴더에 영상을 넣고 여기에 추가해요. 비어 있으면 첫 화면은 화면 높이만큼의 흰 여백으로 남아요.
 // 예: { name: 'intro', label: '영상 설명' }  →  public/hero/intro.mp4 + intro.jpg
+// 실제 프로젝트가 하나도 없을 때만 보이는 예시 틀 (번호만 표시)
+const examples = [3, 2, 1];
 const heroClips: { name: string; label: string }[] = [];
 ---
 <Base overlayHeader>
@@ -22,7 +24,20 @@ const heroClips: { name: string; label: string }[] = [];
     ))}
   </section>
   <main class="projects">
-    {projects.length === 0 && <p class="muted empty">[프로젝트 준비 중]</p>}
+    {projects.length === 0 && examples.map((n) => (
+      <a class="project example" href={`${base}/projects/example/`}>
+        <div class="pair">
+          <div class="cell ph"><span>[렌더 또는 사진]</span></div>
+          <div class="cell drawing ph"><span>[대표 도면]</span></div>
+        </div>
+        <div class="caption">
+          <span class="num">{pad(n)}</span>
+          <span class="title">[프로젝트명]</span>
+          <span class="muted">[위치]</span>
+          <span class="muted">[연도]</span>
+        </div>
+      </a>
+    ))}
     {projects.map((p) => (
       <a class="project" href={`${base}/projects/${p.id}/`}>
         <div class="pair">
@@ -80,7 +95,7 @@ const heroClips: { name: string; label: string }[] = [];
     .hero { grid-template-columns: 1fr; padding-top: 96px; row-gap: 32px; }
     .clip.seq video { max-width: 420px; margin: 0 auto; }
   }
-  .empty { margin: 0; }
+  .ph { display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); color: var(--muted); font-size: 12px; }
   .projects { display: flex; flex-direction: column; gap: 120px; padding: 120px var(--gutter) 0; }
   .project { display: flex; flex-direction: column; gap: 16px; }
   .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: calc(100svh - 140px); min-height: 480px; }
