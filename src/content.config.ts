@@ -28,4 +28,19 @@ const projects = defineCollection({
     }),
 });
 
-export const collections = { projects };
+// 노트 하나 = src/content/notes 안의 .md 파일 하나 (이미지가 있으면 폴더/index.md)
+const notes = defineCollection({
+  loader: glob({ pattern: ['*.md', '*/index.md'], base: './src/content/notes' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),                          // 제목 (단상은 짧게)
+      date: z.coerce.date(),                      // 쓴 날짜 (예: 2026-11-10)
+      kind: z.enum(['단상', '사색', '탐구']),       // 종류
+      summary: z.string().optional(),             // 목록에 보일 한 줄 (사색·탐구)
+      cover: image().optional(),                  // 대표 이미지 (선택)
+      related: z.string().optional(),             // 관련 프로젝트 폴더 이름 (예: 03-seongsu-house)
+      draft: z.boolean().default(false),
+    }),
+});
+
+export const collections = { projects, notes };

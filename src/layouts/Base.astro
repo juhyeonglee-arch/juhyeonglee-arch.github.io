@@ -1,11 +1,12 @@
 ---
 import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import { SITE } from '../site';
-interface Props { title?: string; description?: string; overlayHeader?: boolean; current?: 'projects' | 'photos' | 'about' }
+interface Props { title?: string; description?: string; overlayHeader?: boolean; current?: 'projects' | 'notes' | 'photos' | 'about' }
 const { title, description = SITE.description, overlayHeader = false, current = 'projects' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const nav = [
   { key: 'projects', label: '프로젝트', href: `${base}/` },
+  { key: 'notes', label: '노트', href: `${base}/notes/` },
   { key: 'photos', label: '사진', href: `${base}/photos/` },
   { key: 'about', label: '소개', href: `${base}/about/` },
 ];

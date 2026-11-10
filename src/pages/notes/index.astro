@@ -1,0 +1,59 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const all = (await getCollection('notes', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+// 단상은 목록에서 전문을 바로 보여줘요
+const notes = await Promise.all(all.map(async (n, i) => ({
+  n, num: all.length - i, Content: n.data.kind === '단상' ? (await render(n)).Content : null,
+})));
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pad = (n: number) => String(n).padStart(2, '0');
+const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+<Base title="노트" current="notes">
+  <main class="notes">
+    <p class="intro muted">단상 · 사색 · 탐구. 나의 건축을 찾아가며 남기는 기록.</p>
+    <ol class="list">
+      {notes.length === 0 && (
+        <>
+          <li class="row"><span class="num">03</span><span class="date num muted">[날짜]</span><span class="kind muted">단상</span>
+            <div class="main"><p class="title">[짧은 생각 한두 문장이 목록에 그대로 보여요]</p></div></li>
+          <li class="row"><span class="num">02</span><span class="date num muted">[날짜]</span><span class="kind muted">사색</span>
+            <div class="main"><a class="title" href={`${base}/notes/example/`}>[제목]</a><p class="muted">[한 줄 요약]</p></div></li>
+          <li class="row"><span class="num">01</span><span class="date num muted">[날짜]</span><span class="kind muted">탐구</span>
+            <div class="main"><a class="title" href={`${base}/notes/example/`}>[제목]</a><p class="muted">[한 줄 요약]</p></div></li>
+        </>
+      )}
+      {notes.map(({ n, num, Content }) => (
+        <li class="row">
+          <span class="num">{pad(num)}</span>
+          <span class="date num muted">{fmt(n.data.date)}</span>
+          <span class="kind muted">{n.data.kind}</span>
+          <div class="main">
+            {Content
+              ? <div class="fragment"><Content /></div>
+              : <><a class="title" href={`${base}/notes/${n.id}/`}>{n.data.title}</a>{n.data.summary && <p class="muted">{n.data.summary}</p>}</>}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </main>
+</Base>
+<style>
+  .notes { padding: 64px var(--gutter) 0; display: flex; flex-direction: column; gap: 48px; }
+  .intro { margin: 0; }
+  .list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: 40px 96px 48px minmax(0, 640px); gap: 8px 24px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .main { display: flex; flex-direction: column; gap: 4px; }
+  .main p, .fragment :global(p) { margin: 0; }
+  .fragment { display: flex; flex-direction: column; gap: 8px; }
+  .title { font-weight: 500; }
+  a.title { text-decoration: none; }
+  a.title:hover { text-decoration: underline; text-underline-offset: 4px; }
+  @media (max-width: 720px) {
+    .row { grid-template-columns: 32px auto 1fr; }
+    .main { grid-column: 1 / -1; }
+  }
+</style>
